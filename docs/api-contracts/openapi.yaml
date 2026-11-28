@@ -1,0 +1,98 @@
+openapi: 3.0.3
+info:
+  title: Olive Billing Foundation API
+  version: 0.1.0
+  description: Proposed P01 contract. Not implemented; joint approval required.
+servers:
+  - url: /api/v1
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      summary: Process liveness
+      responses:
+        '200':
+          description: Process is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /ready:
+    get:
+      operationId: getReadiness
+      summary: Required dependency readiness
+      responses:
+        '200':
+          description: Ready
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadyResponse'
+        '503':
+          description: Dependency or required schema unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalError'
+components:
+  responses:
+    InternalError:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    SuccessBase:
+      type: object
+      required: [success, message, data, requestId]
+      properties:
+        success: {type: boolean, enum: [true]}
+        message: {type: string}
+        requestId: {type: string}
+        data: {type: object}
+    HealthResponse:
+      allOf:
+        - $ref: '#/components/schemas/SuccessBase'
+        - type: object
+          properties:
+            data:
+              type: object
+              required: [status]
+              properties:
+                status: {type: string, enum: [healthy]}
+    ReadyResponse:
+      allOf:
+        - $ref: '#/components/schemas/SuccessBase'
+        - type: object
+          properties:
+            data:
+              type: object
+              required: [status]
+              properties:
+                status: {type: string, enum: [ready]}
+    ErrorResponse:
+      type: object
+      required: [success, message, data, error, requestId]
+      properties:
+        success: {type: boolean, enum: [false]}
+        message: {type: string}
+        data: {type: object, nullable: true, enum: [null]}
+        requestId: {type: string}
+        error:
+          type: object
+          required: [code, details]
+          properties:
+            code: {type: string}
+            details:
+              type: array
+              items:
+                type: object
+                required: [field, message]
+                properties:
+                  field: {type: string}
+                  message: {type: string}

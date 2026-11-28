@@ -1,0 +1,7 @@
+# Migration and database access guide
+
+No SQL has been executed. Do not create databases until P01 is authorized. Existing XAMPP Apache, MariaDB, ports, users and other schemas remain untouched. Provision only new application databases and restricted accounts through existing phpMyAdmin. Test account accesses test schema only; no root credentials in application runtime.
+
+Versioned SQL under server/migrations; migration runner under server/src/database. First migration tracking schema in P01; auth tables P02, settings P03, masters P04, invoice drafts P05, issuance P06, documents P07, plans P08, cycles P09, payments P10, adjustments P11. Add deferred FKs when targets exist. Never edit an already-applied shared migration; use forward migrations.
+
+Before execution: verify intended database name, backup shared data as appropriate, check supported engine/version, check current migrations/checksums, lock execution. Apply only pending versions, record checksum and successful completion, verify schema/constraints in phpMyAdmin. MariaDB DDL may implicitly commit: stop on errors, record partial failure, inspect exact applied statements, use reviewed recovery/forward fix; never blindly rerun or assume rollback. Test fresh migrations and recovery against isolated test schema. Runtime connection uses parameterized queries, strict session SQL mode, UTC, least privilege. No automated test targets dev/prod schema. SQL scripts, provisioning steps and tests will be provided separately in the respective tasks.

@@ -1,0 +1,3 @@
+# Common error codes
+
+Approved convention; detailed use per module. 401 INVALID_CREDENTIALS on failed login, UNAUTHENTICATED or SESSION_EXPIRED on protected routes; 403 FORBIDDEN or CSRF_INVALID; 404 NOT_FOUND; 409 DUPLICATE_RECORD, INVALID_STATUS, INVOICE_ALREADY_ISSUED, BILLING_CYCLE_EXISTS; 412 VERSION_CONFLICT; 422 VALIDATION_ERROR; PAYMENT_EXCEEDS_BALANCE and TAX_CONFIGURATION_REQUIRED assigned exact HTTP status per contract; PDF_GENERATION_FAILED and EMAIL_SEND_FAILED per module; 429 RATE_LIMIT_EXCEEDED with Retry-After; 500 INTERNAL_ERROR; 503 SERVICE_UNAVAILABLE. Malformed JSON 400; proposed code BAD_REQUEST pending contract review. Handle code rather than parsing human-readable messages.
